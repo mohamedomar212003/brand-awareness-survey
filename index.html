@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Recall Survey with Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for fine-tuning and responsiveness */
+        body {
+            font-family: "Inter", sans-serif; /* Using Inter font as per instructions */
+            background-color: #f0f2f5; /* Light gray background, matches game canvas background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling */
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px; /* Increased max-width for better layout on larger screens */
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            margin-top: 20px; /* Add some top margin */
+            margin-bottom: 20px; /* Add some bottom margin */
+            /* Game theme integration: Subtle ground effect */
+            border-bottom: 5px solid #6b7280; /* Ground color */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 0 0 5px rgba(107, 114, 128, 0.1); /* Enhanced shadow with ground hint */
+        }
+        h1 {
+            color: #4CAF50; /* Game theme: Dino green for main heading */
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.25rem; /* Larger heading */
+            font-weight: 700; /* Bold heading */
+        }
+        .intro-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a5568; /* Slightly darker body text */
+            font-size: 1.1rem;
+        }
+        .scale-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+            padding: 0 10px; /* Add some padding */
+        }
+        .question-group {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0; /* Light border for separation */
+        }
+        .question-group:last-child {
+            border-bottom: none;
+        }
+        .question-category {
+            font-size: 1.3rem; /* Larger category heading */
+            font-weight: 600; /* Semi-bold */
+            color: #4CAF50; /* Game theme: Dino green for category headings */
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #8BC34A; /* Game theme: Cactus green underline */
+            display: inline-block; /* To make border-bottom only under text */
+        }
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px; /* Reduced gap for better mobile fit */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            justify-content: center; /* Center options */
+            margin-top: 10px;
+        }
+        .radio-group label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 15px; /* Increased padding for better touch target */
+            border: 2px solid #cbd5e0; /* Lighter border */
+            border-radius: 8px; /* Rounded corners for labels */
+            transition: all 0.2s ease-in-out; /* Smooth transitions */
+            min-width: 60px; /* Ensure consistent width for each option */
+            text-align: center;
+        }
+        .radio-group input[type="radio"] {
+            /* Hide default radio button */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px; /* Larger hit area */
+            height: 20px;
+            border: 2px solid #4299e1; /* Blue border */
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            outline: none; /* Remove outline on focus */
+            margin-bottom: 5px; /* Space between radio and number */
+        }
+        .radio-group input[type="radio"]:checked {
+            background-color: #4299e1; /* Blue fill when checked */
+            border-color: #4299e1;
+        }
+        .radio-group input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 10px; /* Inner dot size */
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .radio-group label:hover {
+            background-color: #ebf8ff; /* Light blue on hover */
+            border-color: #4299e1;
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 2px 8px rgba(66, 153, 225, 0.2); /* Subtle shadow on hover */
+        }
+        .radio-group input[type="radio"]:checked + span {
+            font-weight: 700; /* Bold text when checked */
+            color: #4299e1; /* Blue text when checked */
+        }
+        .submit-btn, .action-btn {
+            display: block;
+            width: 250px; /* Wider button */
+            padding: 14px 25px; /* More padding */
+            background-color: #3182ce; /* Deeper blue */
+            color: white;
+            border: none;
+            border-radius: 8px; /* More rounded */
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 40px auto 0; /* More margin */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(49, 130, 206, 0.3); /* Button shadow */
+        }
+        .submit-btn:hover, .action-btn:hover {
+            background-color: #2b6cb0; /* Even deeper blue on hover */
+            transform: translateY(-2px); /* Slight lift */
+            box-shadow: 0 6px 15px rgba(49, 130, 206, 0.4); /* Enhanced shadow */
+        }
+        .message-box {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: none; /* Hidden by default */
+        }
+        #message {
+            background-color: #e6fffa; /* Light green background */
+            color: #38a169; /* Green text */
+            border: 1px solid #9ae6b4;
+        }
+        #error-message {
+            background-color: #fff5f5; /* Light red background */
+            color: #e53e3e; /* Red text */
+            border: 1px solid #feb2b2;
+        }
+
+        /* Game specific styles */
+        #game-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        #gameCanvas {
+            border: 2px solid #6b7280; /* Game theme: Ground color border */
+            background-color: #f7fafc; /* Light background for canvas */
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            touch-action: manipulation; /* Prevent default touch actions like zooming */
+        }
+        #game-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        #game-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        #game-status {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e53e3e;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .game-instructions {
+            font-size: 1rem;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            h1 {
+                font-size: 1.75rem;
+            }
+            .question-category {
+                font-size: 1.15rem;
+            }
+            .question-text {
+                font-size: 1rem;
+            }
+            .radio-group {
+                flex-direction: row; /* Keep as row, but allow wrapping */
+                justify-content: space-around; /* Distribute items evenly */
+                gap: 8px; /* Smaller gap */
+            }
+            .radio-group label {
+                padding: 8px 10px; /* Smaller padding */
+                min-width: 50px; /* Adjust min-width */
+            }
+            .submit-btn, .action-btn {
+                width: 100%; /* Full width on mobile */
+                padding: 12px 20px;
+                font-size: 1.1em;
+            }
+            #gameCanvas {
+                width: 100%; /* Make canvas responsive */
+                height: auto; /* Maintain aspect ratio */
+                max-width: 400px; /* Cap max width */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brand Recall Survey</h1>
+        <p class="intro-text">Please rate your agreement with the following statements based on a scale of 1 to 5:</p>
+
+        <div class="scale-legend">
+            <span>1 = Strongly Disagree</span>
+            <span>2 = Disagree</span>
+            <span>3 = Neutral</span>
+            <span>4 = Agree</span>
+            <span>5 = Strongly Agree</span>
+        </div>
+
+        <form id="surveyForm">
+            <div id="survey-part1">
+                <div class="question-group">
+                    <p class="question-category">Duration</p>
+                    <p class="question-text">1. The length of the ad was sufficient for me to remember the brand name.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q1" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q1" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q1" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q1" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q1" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">2. I found it easier to recognize the brand due to the ad's duration.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q2" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q2" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q2" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q2" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q2" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">3. Longer ads helped reinforce the brand in my memory.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q3" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q3" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q3" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q3" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q3" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Channel</p>
+                    <p class="question-text">4. I am more aware of brands I see advertised on social media platforms.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q4" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q4" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q4" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q4" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q4" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">5. Streaming platform ads increase my ability to recall the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q5" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q5" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q5" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q5" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q5" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">6. The advertising channel influences how well I remember a brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q6" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q6" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q6" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q6" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q6" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Ad Format (Overall)</p>
+                    <p class="question-text">7. The overall design and format of the ad made it easier for me to remember the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q7" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q7" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q7" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q7" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q7" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">8. The combination of layout, media type, interactivity, and navigation enhanced my awareness of the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q8" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q8" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q8" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q8" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q8" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">9. A well-designed ad format made the brand stand out in my memory.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q9" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q9" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q9" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q9" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q9" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Ad Format - Layout</p>
+                    <p class="question-text">10. The ad’s layout helped me quickly identify the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q10" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q10" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q10" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q10" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q10" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">11. A clear ad layout made it easier for me to focus on the brand message.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q11" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q11" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q11" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q11" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q11" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <button type="button" id="startGamePromptBtn" class="action-btn" style="display:none;">Play Game to Continue Survey</button>
+            </div> <div id="game-section" style="display:none;">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Quick Break! Play a Game!</h2>
+                <p class="game-instructions">Press <span class="font-bold">Spacebar</span> or <span class="font-bold">click/tap</span> the game area to jump.</p>
+                <canvas id="gameCanvas" width="600" height="150"></canvas>
+                <div id="game-controls" class="flex flex-col items-center">
+                    <div id="game-score" class="text-xl font-semibold text-gray-700">Score: 0</div>
+                    <div id="game-status" class="text-red-600 font-bold text-2xl mt-2 hidden">Game Over!</div>
+                    <button type="button" id="startGameBtn" class="action-btn mt-4">Start Game</button>
+                    <button type="button" id="restartGameBtn" class="action-btn mt-4 hidden">Restart Game</button>
+                    <button type="button" id="continueSurveyBtn" class="action-btn mt-4 hidden">Continue Survey</button>
+                </div>
+            </div> <div id="survey-part2" style="display:none;">
+                <div class="question-group">
+                    <p class="question-category">Ad Format - Layout</p>
+                    <p class="question-text">12. I remember brands better when the ad has an organized visual layout.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q12" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q12" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q12" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q12" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q12" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Ad Format - Media Type</p>
+                    <p class="question-text">13. Video ads are more effective at helping me remember a brand than image ads.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q13" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q13" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q13" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q13" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q13" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">14. The media type used in the ad influenced how well I recognized the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q14" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q14" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q14" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q14" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q14" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">15. I find brands more memorable when the ad is in video format.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q15" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q15" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q15" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q15" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q15" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Ad Format - Interactivity Level</p>
+                    <p class="question-text">16. Interactive ads helped me remember the brand better than non-interactive ones.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q16" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q16" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q16" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q16" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q16" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">17. I paid more attention to brands in ads that I could interact with.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q17" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q17" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q17" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q17" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q17" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">18. The ability to interact with the ad increased my awareness of the brand.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q18" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q18" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q18" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q18" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q18" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-category">Ad Format - Navigation Design</p>
+                    <p class="question-text">19. I felt more engaged with the brand when I could choose how to explore the ad.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q19" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q19" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q19" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q19" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q19" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">20. Navigating the ad freely helped me understand the brand message better.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q20" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q20" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q20" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q20" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q20" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">21. Ads with guided navigation were less memorable than those I could control.</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q21" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q21" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q21" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q21" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q21" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Survey</button>
+            </div> <div id="message" class="message-box"></div>
+            <div id="error-message" class="message-box"></div>
+        </form>
+    </div>
+
+    <script>
+        // IMPORTANT: You MUST replace 'YOUR_WEB_APP_URL_HERE' with the actual Web App URL
+        // obtained after deploying your Google Apps Script.
+        // If you see "Failed to parse URL from YOUR_WEB_APP_URL_HERE" in the console,
+        // it means you have not updated this line.
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyK6VcCGdIYpVSv34MiifJ9-O1f_SK2V6cxfgEPs7M--c_SeRgrTNSL1ggDAJrf-NNeUw/exec'; 
+
+        // --- DOM Elements ---
+        const form = document.getElementById('surveyForm');
+        const surveyPart1 = document.getElementById('survey-part1');
+        const surveyPart2 = document.getElementById('survey-part2');
+        const gameSection = document.getElementById('game-section');
+        const startGamePromptBtn = document.getElementById('startGamePromptBtn');
+        const continueSurveyBtn = document.getElementById('continueSurveyBtn');
+        const messageDiv = document.getElementById('message');
+        const errorDiv = document.getElementById('error-message');
+
+        // --- Game Elements ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const restartGameBtn = document.getElementById('restartGameBtn');
+        const gameScoreDisplay = document.getElementById('game-score');
+        const gameStatusDisplay = document.getElementById('game-status');
+
+        // --- Game Variables ---
+        let gameRunning = false;
+        let gameOver = false;
+        let score = 0;
+        let animationFrameId;
+
+        // Player (Dino)
+        const player = {
+            x: 50,
+            y: canvas.height - 40, // Adjusted for ground line
+            width: 30,
+            height: 30,
+            velocityY: 0,
+            gravity: 0.6,
+            jumpStrength: -10,
+            isJumping: false,
+            groundY: canvas.height - 10 // Ground line position
+        };
+
+        // Obstacles (Cacti)
+        let obstacles = [];
+        // Further adjusted min/max gap for easier gameplay
+        const obstacleMinGap = 4000; // Increased to make them less frequent
+        const obstacleMaxGap = 6000; // Increased significantly to make them much less frequent
+        let lastObstacleTime = 0;
+        const obstacleSpeed = 1.8; // Slightly reduced speed again for more reaction time
+
+        // --- Game Drawing Functions ---
+        function drawPlayer() {
+            // Simple Dino SVG (stylized)
+            // Head
+            ctx.fillStyle = '#4CAF50'; // Green
+            ctx.beginPath();
+            ctx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width / 2, 0, Math.PI * 2);
+            ctx.fill();
+            // Body
+            ctx.fillRect(player.x, player.y + player.height / 2, player.width, player.height / 2);
+            // Legs
+            ctx.fillRect(player.x + 5, player.y + player.height - 5, 5, 10);
+            ctx.fillRect(player.x + player.width - 10, player.y + player.height - 5, 5, 10);
+        }
+
+        function drawObstacle(obstacle) {
+            // Simple Cactus SVG (stylized)
+            ctx.fillStyle = '#8BC34A'; // Lighter green
+            // Make obstacles smaller
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width * 0.7, obstacle.height * 0.7); // Reduced size
+            // Arms (also reduced proportionally)
+            ctx.fillRect(obstacle.x - 3, obstacle.y + obstacle.height / 3 * 0.7, 7, 3);
+            ctx.fillRect(obstacle.x + obstacle.width * 0.7, obstacle.y + obstacle.height / 2 * 0.7, 7, 3);
+        }
+
+        function drawGround() {
+            ctx.strokeStyle = '#6b7280'; // Gray for ground
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, player.groundY);
+            ctx.lineTo(canvas.width, player.groundY);
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // --- Game Logic Functions ---
+        function updatePlayer() {
+            if (player.isJumping) {
+                player.y += player.velocityY;
+                player.velocityY += player.gravity;
+
+                if (player.y >= player.groundY - player.height) {
+                    player.y = player.groundY - player.height;
+                    player.isJumping = false;
+                    player.velocityY = 0;
+                }
+            }
+        }
+
+        function createObstacle() {
+            // Obstacle dimensions are now smaller
+            const obstacleWidth = 10 + Math.random() * 5; // Smaller width
+            const obstacleHeight = 10 + Math.random() * 10; // Smaller height
+            obstacles.push({
+                x: canvas.width,
+                y: player.groundY - obstacleHeight,
+                width: obstacleWidth,
+                height: obstacleHeight
+            });
+        }
+
+        function updateObstacles() {
+            obstacles.forEach((obstacle, index) => {
+                obstacle.x -= obstacleSpeed; // Move obstacle
+
+                // Remove off-screen obstacles
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacles.splice(index, 1);
+                }
+            });
+
+            // Add new obstacles
+            const currentTime = Date.now();
+            if (currentTime - lastObstacleTime > (obstacleMinGap + Math.random() * (obstacleMaxGap - obstacleMinGap))) {
+                createObstacle();
+                lastObstacleTime = currentTime;
+            }
+        }
+
+        function checkCollision() {
+            for (let i = 0; i < obstacles.length; i++) {
+                const obs = obstacles[i];
+                // Adjust collision detection for smaller obstacles
+                if (
+                    player.x < obs.x + obs.width * 0.7 &&
+                    player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height * 0.7 &&
+                    player.y + player.height > obs.y
+                ) {
+                    return true; // Collision detected
+                }
+            }
+            return false;
+        }
+
+        function updateScore() {
+            score += 1;
+            gameScoreDisplay.textContent = `Score: ${score}`;
+        }
+
+        // --- Game Loop ---
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            clearCanvas();
+            drawGround();
+            drawPlayer();
+            updatePlayer();
+            updateObstacles();
+            obstacles.forEach(drawObstacle);
+            updateScore();
+
+            if (checkCollision()) {
+                endGame();
+                return;
+            }
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            gameRunning = true;
+            gameOver = false;
+            score = 0;
+            obstacles = [];
+            player.y = player.groundY - player.height; // Reset player position
+            player.velocityY = 0;
+            player.isJumping = false;
+            lastObstacleTime = Date.now(); // Reset obstacle timer
+            gameScoreDisplay.textContent = `Score: ${score}`;
+            gameStatusDisplay.classList.add('hidden');
+            startGameBtn.classList.add('hidden');
+            restartGameBtn.classList.add('hidden');
+            continueSurveyBtn.classList.add('hidden'); // Hide continue button during game
+            gameLoop();
+        }
+
+        function endGame() {
+            gameRunning = false;
+            gameOver = true;
+            cancelAnimationFrame(animationFrameId);
+            gameStatusDisplay.textContent = `Game Over! Your score: ${score}`;
+            gameStatusDisplay.classList.remove('hidden');
+            restartGameBtn.classList.remove('hidden');
+            continueSurveyBtn.classList.remove('hidden'); // Show continue button after game over
+        }
+
+        function playerJump() {
+            if (!player.isJumping && gameRunning) {
+                player.isJumping = true;
+                player.velocityY = player.jumpStrength;
+            }
+        }
+
+        // --- Event Listeners for Game ---
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Prevent scrolling
+                playerJump();
+            }
+        });
+
+        canvas.addEventListener('click', playerJump); // Click/tap to jump
+        canvas.addEventListener('touchstart', playerJump); // Touch to jump
+
+        startGameBtn.addEventListener('click', startGame);
+        restartGameBtn.addEventListener('click', startGame);
+
+        // --- Survey Flow Logic ---
+
+        // Function to check if Q11 is answered and show the game prompt button
+        function checkSurveyProgress() {
+            const q11Radios = document.querySelectorAll('input[name="Q11"]');
+            let q11Answered = false;
+            q11Radios.forEach(radio => {
+                if (radio.checked) {
+                    q11Answered = true;
+                }
+            });
+
+            if (q11Answered) {
+                startGamePromptBtn.style.display = 'block';
+            } else {
+                startGamePromptBtn.style.display = 'none';
+            }
+        }
+
+        // Listen for changes on any radio button in survey part 1 to check progress
+        surveyPart1.addEventListener('change', (e) => {
+            if (e.target.type === 'radio') {
+                checkSurveyProgress();
+            }
+        });
+
+        // Event listener for "Play Game to Continue Survey" button
+        startGamePromptBtn.addEventListener('click', () => {
+            surveyPart1.style.display = 'none';
+            gameSection.style.display = 'flex';
+            // Optionally auto-start game or wait for user to click "Start Game"
+            // startGame(); // Uncomment to auto-start
+        });
+
+        // Event listener for "Continue Survey" button after game
+        continueSurveyBtn.addEventListener('click', () => {
+            gameSection.style.display = 'none';
+            surveyPart2.style.display = 'block';
+            // Ensure all Q1-Q11 radio buttons are still 'required'
+            // and Q12-Q21 are also 'required' for final submission.
+            // All radio buttons are already set to required in HTML.
+            // The final form validation will check all of them.
+        });
+
+        // --- Form Submission Logic ---
+        form.addEventListener('submit', async e => {
+            e.preventDefault(); // Prevent default form submission
+
+            // Clear previous messages and hide message boxes
+            messageDiv.textContent = '';
+            messageDiv.style.display = 'none';
+            errorDiv.textContent = '';
+            errorDiv.style.display = 'none';
+
+            // Check if the scriptURL placeholder is still present
+            if (scriptURL === 'YOUR_WEB_APP_URL_HERE') {
+                errorDiv.textContent = 'Error: Please update the "scriptURL" variable in the JavaScript code with your Google Apps Script Web App URL.';
+                errorDiv.style.display = 'block';
+                console.error('Error: scriptURL is still the placeholder. Please replace "YOUR_WEB_APP_URL_HERE" with your actual Google Apps Script Web App URL.');
+                return; // Stop submission
+            }
+
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // Client-side validation: Check if all 21 questions are answered
+            for (let i = 1; i <= 21; i++) {
+                const questionName = `Q${i}`;
+                if (!data[questionName]) {
+                    errorDiv.textContent = `Please answer all questions before submitting. Question ${i} is unanswered.`;
+                    errorDiv.style.display = 'block'; // Show error message
+                    // Scroll to the first unanswered question for better UX
+                    const unansweredRadio = document.querySelector(`input[name="${questionName}"]:not(:checked)`);
+                    if (unansweredRadio) {
+                        unansweredRadio.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return; // Stop submission if any question is unanswered
+                }
+            }
+
+            // Show a loading indicator
+            messageDiv.textContent = 'Submitting your survey...';
+            messageDiv.style.display = 'block';
+            messageDiv.style.backgroundColor = '#e0f2fe'; /* Light blue for loading */
+            messageDiv.style.color = '#2563eb'; /* Darker blue for loading text */
+            
+            try {
+                // Send data to Google Apps Script
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: new URLSearchParams(data), // Send data as URL-encoded form data
+                    mode: 'no-cors' // Required for Google Apps Script when fetched from a different origin
+                });
+
+                // Since mode is 'no-cors', we cannot directly check response.ok or response.status.
+                // We assume success if the fetch operation itself doesn't throw a network error.
+                messageDiv.textContent = 'Thank you for completing the survey! Your responses have been recorded.';
+                messageDiv.style.backgroundColor = '#e6fffa'; /* Green for success */
+                messageDiv.style.color = '#38a169';
+                form.reset(); // Clear the form after successful submission
+
+            } catch (error) {
+                console.error('Error submitting survey:', error.message);
+                errorDiv.textContent = 'There was an error submitting your survey. Please check your internet connection and try again.';
+                errorDiv.style.display = 'block'; // Show error message
+                messageDiv.style.display = 'none'; // Hide loading message
+            }
+        });
+
+        // Initialize survey state on load (ensure only part 1 is visible)
+        document.addEventListener('DOMContentLoaded', () => {
+            surveyPart1.style.display = 'block';
+            gameSection.style.display = 'none';
+            surveyPart2.style.display = 'none';
+            checkSurveyProgress(); // Check initial state of Q11
+        });
+    </script>
+</body>
+</html>
