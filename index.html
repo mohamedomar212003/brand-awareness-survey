@@ -551,6 +551,40 @@
                     </div>
                 </div>
 
+                <div class="question-group">
+                    <p class="question-category">Overall Brand Recall & Influence</p>
+                    <p class="question-text">22. How likely are you to remember a brand after seeing its advertisement?</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q22" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q22" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q22" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q22" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q22" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">23. To what extent do advertisements influence your purchasing decisions?</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q23" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q23" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q23" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q23" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q23" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <p class="question-text">24. Overall, do you find advertisements helpful in discovering new brands?</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="Q24" value="1" required><span>1</span></label>
+                        <label><input type="radio" name="Q24" value="2"><span>2</span></label>
+                        <label><input type="radio" name="Q24" value="3"><span>3</span></label>
+                        <label><input type="radio" name="Q24" value="4"><span>4</span></label>
+                        <label><input type="radio" name="Q24" value="5"><span>5</span></label>
+                    </div>
+                </div>
+
                 <button type="submit" class="submit-btn">Submit Survey</button>
             </div> <div id="message" class="message-box"></div>
             <div id="error-message" class="message-box"></div>
@@ -848,8 +882,8 @@
                 data[key] = value;
             }
 
-            // Client-side validation: Check if all 21 questions are answered
-            for (let i = 1; i <= 21; i++) {
+            // Client-side validation: Check if all 24 questions are answered
+            for (let i = 1; i <= 24; i++) { // Changed loop limit to 24
                 const questionName = `Q${i}`;
                 if (!data[questionName]) {
                     errorDiv.textContent = `Please answer all questions before submitting. Question ${i} is unanswered.`;
